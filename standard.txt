@@ -1,0 +1,59 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Main.RoomsTypes;
+
+import Main.Room;
+
+/**
+ *
+ * @author Mina
+ */
+public class StandardRoom extends Room {
+
+    private int NumberOfBeds;
+    private double BedPrice;
+
+    public StandardRoom(int RoomNumber, int NumberOfBeds, double BedPrice) {
+        super(RoomNumber);
+        this.NumberOfBeds = NumberOfBeds;
+        this.BedPrice = BedPrice;
+    }
+
+    @Override
+    public double getProfits() {
+        double profitsOfStandard = NumberOfBeds * BedPrice * getDaysOfReservation();
+        return profitsOfStandard;
+    }
+
+    /**
+     * @return the NumberOfBeds
+     */
+    public int getNumberOfBeds() {
+        return NumberOfBeds;
+    }
+
+    /**
+     * @param NumberOfBeds the NumberOfBeds to set
+     */
+    public void setNumberOfBeds(int NumberOfBeds) {
+        this.NumberOfBeds = NumberOfBeds;
+    }
+
+    /**
+     * @return the BedPrice
+     */
+    public double getBedPrice() {
+        return BedPrice;
+    }
+
+    /**
+     * @param BedPrice the BedPrice to set
+     */
+    public void setBedPrice(double BedPrice) {
+        this.BedPrice = BedPrice;
+    }
+
+}

@@ -1,0 +1,58 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Main.RoomsTypes;
+
+import Main.Room;
+
+/**
+ *
+ * @author Mina
+ */
+public class ConferenceRoom extends Room {
+
+    private int NumberOfSeats;
+    private double SeatPrice;
+
+    public ConferenceRoom(int RoomNumber, int NumberOfSeats, double SeatPrice) {
+        super(RoomNumber);
+        this.NumberOfSeats = NumberOfSeats;
+        this.SeatPrice = SeatPrice;
+    }
+
+    @Override
+    public double getProfits() {
+        double profitsOfConverance = NumberOfSeats * SeatPrice * getDaysOfReservation();
+        return profitsOfConverance;
+    }
+
+    /**
+     * @return the NumberOfSeats
+     */
+    public int getNumberOfSeats() {
+        return NumberOfSeats;
+    }
+
+    /**
+     * @param NumberOfSeats the NumberOfSeats to set
+     */
+    public void setNumberOfSeats(int NumberOfSeats) {
+        this.NumberOfSeats = NumberOfSeats;
+    }
+
+    /**
+     * @return the SeatPrice
+     */
+    public double getSeatPrice() {
+        return SeatPrice;
+    }
+
+    /**
+     * @param SeatPrice the SeatPrice to set
+     */
+    public void setSeatPrice(double SeatPrice) {
+        this.SeatPrice = SeatPrice;
+    }
+}

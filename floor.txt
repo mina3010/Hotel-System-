@@ -1,0 +1,127 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Main;
+
+import Main.RoomsTypes.ConferenceRoom;
+import Main.RoomsTypes.StandardRoom;
+import Main.RoomsTypes.SweetRoom;
+import java.util.ArrayList;
+
+/**
+ *
+ * @author Mina
+ */
+public class Floor {
+
+    private int FloorNumber;
+    private int NumberOfRooms;
+    private ArrayList<Room> Rooms = new ArrayList<Room>();
+    private boolean SweetRoom;
+    private boolean StandardtRoom;
+    private boolean ConveranceRoom;
+
+    Floor(int FloorNumber, int NumberOfRooms) {
+        this.FloorNumber = FloorNumber;
+        this.NumberOfRooms = NumberOfRooms;
+    }
+
+    /**
+     * @return the FloorNumber
+     */
+    public int getFloorNumber() {
+        return FloorNumber;
+    }
+
+    /**
+     * @param FloorNumber the FloorNumber to set
+     */
+    public void setFloorNumber(int FloorNumber) {
+        this.FloorNumber = FloorNumber;
+    }
+
+    /**
+     * @return the NumberOfRooms
+     */
+    public int getNumberOfRooms() {
+        return NumberOfRooms;
+    }
+
+    /**
+     * @param NumberOfRooms the NumberOfRooms to set
+     */
+    public void setNumberOfRooms(int NumberOfRooms) {
+        this.NumberOfRooms = NumberOfRooms;
+    }
+
+    /**
+     * @return the Rooms
+     */
+    public ArrayList<Room> getRooms() {
+        return Rooms;
+    }
+
+    /**
+     * @param Rooms the Rooms to set
+     */
+    public void setRooms(ArrayList<Room> Rooms) {
+        this.Rooms = Rooms;
+    }
+
+  
+
+   public void avilableRoomInFloor() {
+      for(Room room:Rooms){
+          if (room  instanceof SweetRoom)
+          
+              if(room.isReserved()==false) {
+               System.out.println("avilable SweetRoom In Floor " + room.getRoomNumber());
+             }
+          
+         else if (room  instanceof StandardRoom)
+              
+              if(room.isReserved()==false) {
+                  System.out.println("avilable StandardRoom In Floor " + room.getRoomNumber());
+              }
+          
+              else if (room  instanceof ConferenceRoom)
+              
+              if(room.isReserved()==false) {
+                  System.out.println("avilable ConferenceRoom In Floor " + room.getRoomNumber());
+              
+              }
+      }
+
+    }
+   
+    void showAvilable() {
+        if (Rooms.size() > 0) {
+            for (int i = 0; i < Rooms.size(); i++) {
+                if (Rooms.get(i).isReserved() == false) {
+                    System.out.println(Rooms.get(i+1));
+                }
+            }
+        }
+
+    }
+
+    void AllData() {
+        if (getRooms().size() > 0) {
+            for (int i = 0; i < getRooms().size(); i++) {
+                System.out.println(getRooms().get(i));
+            }
+        }
+    }
+
+    double ShowAllprofits() {
+        double allProfits = 0;
+        for (int i = 0; i < getRooms().size(); i++) {
+            allProfits += getRooms().get(i).getProfits();
+        }
+        return allProfits;
+    }
+
+   
+}

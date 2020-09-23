@@ -1,0 +1,373 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Main;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
+import Main.RoomsTypes.*;
+import java.io.PrintStream;
+
+/**
+ *
+ * @author Mina
+ */
+public class MainMenu {
+
+    /**
+     * @param args the command line arguments
+     */
+    private static ArrayList<Floor> HotelFloors = new ArrayList<>();
+
+    public static void main(String[] args) {
+        try {
+            File file = new File("C:\\Users\\Mina\\Desktop\\New folder\\conf.txt");
+
+            Scanner input = new Scanner(file);
+
+            readHotelConfiguration(input);
+
+            showMainMenu();
+
+        } catch (FileNotFoundException ex) {
+            System.out.println("filenotfound");
+        }
+
+    }
+
+    private static void readHotelConfiguration(Scanner input) {
+
+        try {
+
+            String currentLine = input.nextLine();
+            String[] lineData = currentLine.split(" ");
+
+            int FloorsNumber = Integer.parseInt(lineData[1]);
+
+            for (int i = 0; i < FloorsNumber; i++) {
+                String currentFloorLine = input.nextLine();
+                String[] lineFloorData = currentFloorLine.split(" ");
+
+                String FloorNumberString = lineFloorData[0].replace("Floor#", "").replace(",", "");
+                int FloorNumber = Integer.parseInt(FloorNumberString);
+                int RoomsNumber = Integer.parseInt(lineFloorData[2]);
+
+                Floor floor = new Floor(FloorNumber, RoomsNumber);
+                HotelFloors.add(floor);
+
+                for (int j = 0; j < RoomsNumber; j++) {
+                    String currentRoomLine = input.nextLine();
+                    String[] lineRoomData = currentRoomLine.split(", ");
+
+                    if (lineRoomData[0].equals("Standard")) {
+
+                        int RoomNumber = Integer.parseInt(lineRoomData[1]);
+                        int NumberOfBeds = Integer.parseInt(lineRoomData[2]);
+                        double BedPrice = Double.parseDouble(lineRoomData[3]);
+
+                        StandardRoom standardRoom = new StandardRoom(RoomNumber, NumberOfBeds, BedPrice);
+                        floor.getRooms().add(standardRoom);
+
+                    } else if (lineRoomData[0].equals("Sweet")) {
+
+                        int RoomNumber = Integer.parseInt(lineRoomData[1]);
+                        double PricePerNight = Double.parseDouble(lineRoomData[2]);
+
+                        SweetRoom sweetRoom = new SweetRoom(RoomNumber, PricePerNight);
+                        floor.getRooms().add(sweetRoom);
+
+                    } else if (lineRoomData[0].equals("Conference")) {
+
+                        int RoomNumber = Integer.parseInt(lineRoomData[1]);
+                        int NumberOfSeats = Integer.parseInt(lineRoomData[2]);
+                        double SeatPrice = Double.parseDouble(lineRoomData[3]);
+
+                        ConferenceRoom conferenceRoom = new ConferenceRoom(RoomNumber, NumberOfSeats, SeatPrice);
+                        floor.getRooms().add(conferenceRoom);
+
+                    }
+                }
+
+            }
+
+            System.out.println("Hotel Configuration Loaded.");
+
+        } catch (Exception ex) {
+            System.out.println("Error happend");
+        }
+    }
+
+    private static void showMainMenu() {
+
+        Scanner inputScanner = new Scanner(System.in);
+
+        System.out.println("");
+        System.out.println("");
+
+        System.out.println("*** Main Menu ***");
+        System.out.println("1. Show hotel status.");
+        System.out.println("2. Make reservation.");
+        System.out.println("3. Cancel reservation.");
+        System.out.println("4. Display available rooms in a particular floor.");
+        System.out.println("5. Display the total expected profit.");
+        System.out.println("6. Exit.");
+
+        System.out.println("Please enter your choice: ");
+
+        int choiceNumber = 0;
+        try {
+            choiceNumber = inputScanner.nextInt();
+        } catch (Exception ex) {
+            System.out.println("Error in your choice, please try again.");
+            showMainMenu();
+            return;
+        }
+
+        if (choiceNumber < 1 && choiceNumber > 6) {
+            System.out.println("Error in your choice, please try again.");
+            showMainMenu();
+            return;
+        } else {
+            switch (choiceNumber) {
+                case 1:
+                    showStatusOfHotel();
+                    break;
+                case 2:
+                    makeReservation();
+                    break;
+                case 3:
+                    cancelReservation();
+                    break;
+                case 4:
+                    availableRoomInParticularFloor();
+                    break;
+                case 5:
+                    getProfits();
+                    break;
+                case 6:
+                    System.exit(0);
+                    break;
+            }
+        }
+    }
+
+    private static void showStatusOfHotel() {
+
+        System.out.println("");
+        System.out.println("");
+
+        for (Floor floor : HotelFloors) {
+
+            System.out.println("");
+            System.out.println("Floor #" + floor.getFloorNumber());
+
+            System.out.print("Available Rooms: ");
+            for (Room room : floor.getRooms()) {
+                if (!room.isReserved()) {
+                    System.out.print(room.getRoomNumber() + " ");
+                }
+            }
+
+            System.out.println("");
+            System.out.print("Reserved Rooms: ");
+            for (Room room : floor.getRooms()) {
+                if (room.isReserved()) {
+                    System.out.print(room.getRoomNumber() + " ");
+                }
+            }
+
+        }
+
+        showMainMenu();
+    }
+
+    private static void makeReservation() {
+
+        Scanner inputScanner = new Scanner(System.in);
+
+        System.out.println("Please enter floor number: ");
+        int floorNumber = inputScanner.nextInt();
+        boolean isFloorNumberExist = false;
+
+        for (Floor floor : HotelFloors) {
+            if (floor.getFloorNumber() == floorNumber) {
+                isFloorNumberExist = true;
+
+                System.out.println("Please enter room number: ");
+                int roomNumber = inputScanner.nextInt();
+                boolean isRoomNumberExist = false;
+
+                for (Room room : floor.getRooms()) {
+                    if (room.getRoomNumber() == roomNumber) {
+                        isRoomNumberExist = true;
+
+                        if (room.isReserved()) {
+                            System.out.println("This room is already reserved. Choose another room.");
+                            makeReservation();
+                        } else {
+                            System.out.println("How many days to reserve?");
+
+                            int reservationDays = 0;
+                            try {
+                                reservationDays = inputScanner.nextInt();
+                            } catch (Exception ex) {
+                                System.out.println("Error reservation days number.");
+                                makeReservation();
+                                return;
+                            }
+                            
+                            if(reservationDays < 1){
+                                System.out.println("Error reservation days number.");
+                                makeReservation();
+                                return;
+                            }
+
+                            System.out.println("Do you really want to reserve this room? Y "
+                                    + "for reserve or any key for exit.");
+                            char answer = inputScanner.next().charAt(0);
+
+                            if (answer == 'y' || answer == 'Y') {
+                                room.setReserved(true);
+                                room.setDaysOfReservation(reservationDays);
+                                System.out.println("Reserved Done.");
+                                showMainMenu();
+                            } else {
+                                showMainMenu();
+                            }
+                        }
+
+                        break;
+                    }
+                }
+
+                if (!isRoomNumberExist) {
+                    System.out.println("Error room number.");
+                    makeReservation();
+                }
+
+                break;
+            }
+        }
+
+        if (!isFloorNumberExist) {
+            System.out.println("Error floor number.");
+            makeReservation();
+        }
+    }
+
+    private static void cancelReservation() {
+
+        Scanner inputScanner = new Scanner(System.in);
+
+        System.out.println("Please enter floor number: ");
+        int floorNumber = inputScanner.nextInt();
+        boolean isFloorNumberExist = false;
+
+        for (Floor floor : HotelFloors) {
+            if (floor.getFloorNumber() == floorNumber) {
+                isFloorNumberExist = true;
+
+                System.out.println("Please enter room number: ");
+                int roomNumber = inputScanner.nextInt();
+                boolean isRoomNumberExist = false;
+
+                for (Room room : floor.getRooms()) {
+                    if (room.getRoomNumber() == roomNumber) {
+                        isRoomNumberExist = true;
+
+                        if (room.isReserved()) {
+                            System.out.println("This room is reserved. "
+                                    + "Do you want to cancel this room? Y "
+                                    + "for cancel or any key for exit.");
+                            
+                            char answer = inputScanner.next().charAt(0);
+                            if (answer == 'y' || answer == 'Y') {
+                                room.setReserved(false);
+                                System.out.println("Canceled Done.");
+                                showMainMenu();
+                            } else {
+                                showMainMenu();
+                            }
+                        } else {
+                            System.out.println("this room is not reseved");
+                            showMainMenu();
+                        }
+                        break;
+                    }
+                }
+
+                if (!isRoomNumberExist) {
+                    System.out.println("Error room number.");
+                    makeReservation();
+                }
+
+                break;
+            }
+        }
+
+        if (!isFloorNumberExist) {
+            System.out.println("Error floor number.");
+            makeReservation();
+        }
+    }
+
+    private static void availableRoomInParticularFloor() {
+        Scanner inputScanner = new Scanner(System.in);
+
+        System.out.println("Please enter floor number: ");
+        int floorNumber = inputScanner.nextInt();
+        boolean isFloorNumberExist = false;
+
+        for (Floor floor : HotelFloors) {
+            if (floor.getFloorNumber() == floorNumber) {
+                isFloorNumberExist = true;
+                
+                System.out.print("Available Rooms: ");
+                for (Room room : floor.getRooms()) {
+                    if (!room.isReserved()) {
+                        System.out.print(room.getRoomNumber() + " ");
+                    }
+                }
+            }
+        }
+        if (!isFloorNumberExist) {
+            System.out.println("Error floor number.");
+            showMainMenu();
+        }
+        showMainMenu();
+    }
+
+    private static void getProfits() {
+
+        System.out.println("");
+        System.out.println("");
+
+        double totalProfits = 0 ;
+        for (Floor floor : HotelFloors) {
+
+            System.out.println("");
+            System.out.println("Floor #" + floor.getFloorNumber());
+
+            System.out.print("Profits: ");
+
+            double floorProfits = 0;
+            for (Room room : floor.getRooms()) {
+                if (room.isReserved()) {
+                    floorProfits += room.getProfits();
+                }
+            }
+
+            System.out.println(floorProfits);
+
+            totalProfits += floorProfits;
+        }
+
+        System.out.println("Total Profits: " + totalProfits);
+        
+        showMainMenu();
+    }
+
+}

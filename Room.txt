@@ -1,0 +1,34 @@
+package Main;
+
+public abstract class Room {
+
+    private int RoomNumber;
+    private int DaysOfReservation;
+    private boolean IsReserved = false;
+
+    public abstract double getProfits();
+    
+    public Room(int RoomNumber){
+        this.RoomNumber = RoomNumber;
+    }
+    
+    public int getRoomNumber() {
+        return RoomNumber;
+    }
+
+    public int getDaysOfReservation() {
+        return DaysOfReservation;
+    }
+
+    public void setDaysOfReservation(int daysOfReservation) {
+        this.DaysOfReservation = daysOfReservation;
+    }
+
+    public boolean isReserved() {
+        return this.IsReserved;
+    }
+
+    public void setReserved(boolean reserved) {
+        IsReserved = reserved;
+    }
+}
